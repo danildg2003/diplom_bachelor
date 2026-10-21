@@ -37,7 +37,7 @@ async function bootstrap() {
     res.setHeader('Content-Type', promClient.register.contentType);
     res.send(await promClient.register.metrics());
   });
-  await app.listen(8082);
+  await app.listen(process.env.PORT ?? 8082);
 }
 bootstrap();
 

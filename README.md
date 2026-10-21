@@ -19,9 +19,9 @@
 Перед запуском скопировать `.env.example` в `.env` в папках сервисов и `alertmanager.example.yml` в `alertmanager.yml`, вписать свои данные.
 
 ```
-cd credit-loans && docker build -f docker/build.Dockerfile -t credit-loans-image .
-cd ../credit-programs && docker build -f docker/build.Dockerfile -t credit-programs-image .
-cd .. && docker-compose up -d
+docker compose up -d --build
 ```
 
-Grafana: http://localhost:3000, Prometheus: http://localhost:9090
+При первом запуске базы заполняются тестовыми данными из папки `db-init`.
+
+API: http://localhost/api (через nginx), Grafana: http://localhost:3000, Prometheus: http://localhost:9090

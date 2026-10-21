@@ -1,11 +1,9 @@
-version: '3.8'
-
 services:
   db_credit_programs: # создаем контейнер под БД credit-programs
-    image: postgres:latest
+    image: postgres:16
     container_name: db_credit_programs
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U user -d credit_programs"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -20,12 +18,13 @@ services:
       - monitoring
     volumes:
       - ./db_credit_programs_data:/var/lib/postgresql/data
+      - ./db-init/credit_programs:/docker-entrypoint-initdb.d:ro # начальные данные, применяются только на пустую БД
 
   db_credit_loans: # создаем контейнер под БД credit-loans
-    image: postgres:latest
+    image: postgres:16
     container_name: db_credit_loans
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U user -d credit_loans"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -40,12 +39,20 @@ services:
       - monitoring
     volumes:
       - ./db_credit_loans_data:/var/lib/postgresql/data
+      - ./db-init/credit_loans:/docker-entrypoint-initdb.d:ro # начальные данные, применяются только на пустую БД
 
   credit-programs: # создаем контейнер под "сервис/микросервис" для его связки с другими системами + работы с метриками
+    build:
+      context: ./credit-programs
+      dockerfile: docker/build.Dockerfile
     image: credit-programs-image
     container_name: credit-programs
+    env_file: ./credit-programs/.env
+    environment: # внутри docker-сети БД доступна по имени контейнера и порту 5432
+      CREDIT_PROGRAMS_HOST: db_credit_programs
+      CREDIT_PROGRAMS_PORT: 5432
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -55,13 +62,21 @@ services:
     networks:
       - monitoring
     depends_on:
-      - db_credit_programs
+      db_credit_programs:
+        condition: service_healthy
 
   credit-loans: # создаем контейнер под "сервис/микросервис" для его связки с другими системами + работы с метриками
+    build:
+      context: ./credit-loans
+      dockerfile: docker/build.Dockerfile
     image: credit-loans-image
     container_name: credit-loans
+    env_file: ./credit-loans/.env
+    environment: # внутри docker-сети БД доступна по имени контейнера и порту 5432
+      CREDIT_LOANS_HOST: db_credit_loans
+      CREDIT_LOANS_PORT: 5432
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -71,8 +86,9 @@ services:
     networks:
       - monitoring
     depends_on:
-      - db_credit_loans
-      
+      db_credit_loans:
+        condition: service_healthy
+
   nginx: # выступает в качестве шлюза между пользаком и сервером
     image: nginx:latest
     container_name: nginx_gateway
@@ -89,14 +105,15 @@ services:
     networks:
       - monitoring
     depends_on:
-      - credit-loans
+      credit-loans:
+        condition: service_healthy
 
   cadvisor: #собирает метрики с контейнеров
-    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    image: ghcr.io/google/cadvisor:0.60.6
     container_name: cadvisor
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/healthz"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -107,8 +124,6 @@ services:
       - /var/run:/var/run:ro
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
-      - ./machine-id:/etc/machine-id:ro
-
     networks:
       - monitoring
     depends_on:
@@ -121,7 +136,7 @@ services:
     image: prom/node-exporter:v1.6.1
     container_name: node-exporter
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9100/"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9100/"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -137,7 +152,7 @@ services:
     image: prom/prometheus:v2.45.0
     container_name: prometheus
     healthcheck:
-      test: ["CMD", "wget", "http://localhost:9090"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9090/-/healthy"]
       interval: 10s
       timeout: 15s
       retries: 10
@@ -177,7 +192,7 @@ services:
     image: grafana/grafana:10.0.0
     container_name: grafana
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -197,8 +212,3 @@ services:
 networks:
   monitoring:
     driver: bridge
-
-volumes:
-  db_credit_programs_data:
-  db_credit_loans_data:
-  grafana-storage:

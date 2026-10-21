@@ -1,11 +1,12 @@
-FROM node:18
+FROM node:22
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 COPY . .
 RUN npm run build
-CMD ["npm", "run", "start"]
-EXPOSE 8083
+ENV PORT=8080
+EXPOSE 8080
+CMD ["node", "dist/main"]
 
 
-# docker build -t credit-programs-image .
+# docker build -f docker/build.Dockerfile -t credit-programs-image .
