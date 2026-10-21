@@ -23,3 +23,12 @@ docker compose up -d --build
 ```
 
 API: http://localhost/api (через nginx), Grafana: http://localhost:3000, Prometheus: http://localhost:9090
+
+Для разработки можно поднять в докере только базы, а сервисы запускать локально:
+
+```
+docker compose up -d db_credit_loans db_credit_programs
+cd credit-loans && npm install && npm run start:dev
+```
+
+Swagger: http://localhost:8082/api (credit-loans) и http://localhost:8083/api (credit-programs)
