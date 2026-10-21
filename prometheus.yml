@@ -1,0 +1,37 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+rule_files:
+  - "alerts.yml"
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+
+  - job_name: 'credit-programs'
+    static_configs:
+      - targets: ['credit-programs:8080']
+
+  - job_name: 'credit-loans'
+    static_configs:
+      - targets: ['credit-loans:8080']
+
+  - job_name: 'nginx_gateway'
+    static_configs:
+      - targets: ['nginx_gateway:80']

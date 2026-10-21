@@ -1,0 +1,24 @@
+# Dependencies & build output
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Secrets / credentials (use the *.example files as templates)
+.env
+.env.*
+!.env.example
+alertmanager.yml
+
+# Runtime data (Postgres data dirs, Grafana DB with users and sessions)
+db_credit_loans_data/
+db_credit_programs_data/
+grafana-storage/
+machine-id
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

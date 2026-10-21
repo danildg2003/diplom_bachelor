@@ -1,0 +1,26 @@
+global:
+  resolve_timeout: 1m
+
+route:
+  group_by: ['alertname']
+  group_wait: 10s
+  group_interval: 1m
+  repeat_interval: 1h
+  receiver: 'default-receiver'
+
+receivers:
+  - name: 'default-receiver'
+    email_configs:
+      - to: 'danildg2003@mail.ru'
+        from: 'danildg2003@mail.ru'          
+        smarthost: 'smtp.mail.ru:587'
+        auth_username: 'danildg2003@mail.ru'  
+        auth_password: 'CHANGE_ME'      
+        require_tls: true                       
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']
