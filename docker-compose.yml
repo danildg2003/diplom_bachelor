@@ -18,7 +18,6 @@ services:
       - monitoring
     volumes:
       - ./db_credit_programs_data:/var/lib/postgresql/data
-      - ./db-init/credit_programs:/docker-entrypoint-initdb.d:ro # начальные данные, применяются только на пустую БД
 
   db_credit_loans: # создаем контейнер под БД credit-loans
     image: postgres:16
@@ -39,7 +38,6 @@ services:
       - monitoring
     volumes:
       - ./db_credit_loans_data:/var/lib/postgresql/data
-      - ./db-init/credit_loans:/docker-entrypoint-initdb.d:ro # начальные данные, применяются только на пустую БД
 
   credit-programs: # создаем контейнер под "сервис/микросервис" для его связки с другими системами + работы с метриками
     build:

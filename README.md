@@ -22,6 +22,4 @@
 docker compose up -d --build
 ```
 
-При первом запуске базы заполняются тестовыми данными из папки `db-init`.
-
 API: http://localhost/api (через nginx), Grafana: http://localhost:3000, Prometheus: http://localhost:9090

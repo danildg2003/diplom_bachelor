@@ -12,10 +12,10 @@ export class CreditLoans {
   summCredit: number;
 
   @ApiProperty()
-  @Column({ unique: true })
+  @Column()
   stavkaCredit: number;
 
   @ApiProperty()
-  @Column({ unique: true })
+  @Column()
   srokCredit: number;
 }
