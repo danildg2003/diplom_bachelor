@@ -13,7 +13,6 @@ alertmanager.yml
 # Runtime data (Postgres data dirs, Grafana DB with users and sessions)
 db_credit_loans_data/
 db_credit_programs_data/
-*.old-pg17/
 grafana-storage/
 machine-id
 
