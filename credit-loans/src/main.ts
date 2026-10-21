@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import * as promClient from 'prom-client'; // импортируем prom-client
+import { writeFileSync } from 'fs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -29,8 +30,11 @@ async function bootstrap() {
     )
     .build();
   
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
+  // Сохраняем спецификацию в файл, чтобы открывать ее через Preview Swagger
+  writeFileSync('swagger.json', JSON.stringify(document, null, 2));
 
   // Метрикиа
   app.getHttpAdapter().get('/api/metrics', async (req, res) => {

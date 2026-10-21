@@ -2,6 +2,7 @@
 node_modules/
 dist/
 coverage/
+swagger.json
 *.tsbuildinfo
 
 # Secrets / credentials (use the *.example files as templates)
