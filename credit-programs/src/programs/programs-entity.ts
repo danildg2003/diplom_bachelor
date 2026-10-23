@@ -6,7 +6,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreditPrograms {
     @ApiProperty()
     @PrimaryGeneratedColumn('uuid')
-    id: number;
+    id: string;
 
     @ApiProperty()
     @Column()

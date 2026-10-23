@@ -2,10 +2,10 @@
 import { applyDecorators } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 export function CreateLoansResultSwagger() {
@@ -16,10 +16,10 @@ export function CreateLoansResultSwagger() {
       description: 'Информация найдена',
     }),
     ApiNotFoundResponse({
-      description: 'Информация не найдена',
+      description: 'Запрошенная страница не найдена',
     }),
-    ApiForbiddenResponse({
-      description: 'Недостаточно прав доступа',
+    ApiUnauthorizedResponse({
+      description: 'Токен отсутствует или недействителен',
     }),
   );
 }

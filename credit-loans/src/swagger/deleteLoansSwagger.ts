@@ -1,10 +1,11 @@
 import { applyDecorators } from '@nestjs/common';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
-  ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 export function DeleteLoansSwagger() {
@@ -16,11 +17,14 @@ export function DeleteLoansSwagger() {
     ApiOkResponse({
       description: 'Данные успешно удалены',
     }),
-    ApiNotFoundResponse({
-      description: 'Не удалось удалить данные',
+    ApiBadRequestResponse({
+      description: 'Некорректный id',
     }),
-    ApiForbiddenResponse({
-      description: 'Недостаточно прав доступа',
+    ApiNotFoundResponse({
+      description: 'Запись не найдена',
+    }),
+    ApiUnauthorizedResponse({
+      description: 'Токен отсутствует или недействителен',
     }),
   );
 }

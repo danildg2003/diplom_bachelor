@@ -1,18 +1,21 @@
 import { applyDecorators } from "@nestjs/common";
-import { ApiBearerAuth, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiOperation, ApiUnauthorizedResponse } from "@nestjs/swagger";
 
 export function PutProgramsSwagger(){
     return applyDecorators(
         ApiOperation({summary: `Добавить информацию о кредитных программах`}),
         ApiBearerAuth('Access Token'),
-        ApiOkResponse({
+        ApiCreatedResponse({
             description: 'Информация добавлена успешно',
         }),
-        ApiNotFoundResponse({
-            description: 'Не удалось добавить информацию',
+        ApiBadRequestResponse({
+            description: 'Некорректные данные',
         }),
-        ApiForbiddenResponse({
-            description: 'Недостаточно прав доступа'
+        ApiUnauthorizedResponse({
+            description: 'Токен отсутствует или недействителен'
+        }),
+        ApiInternalServerErrorResponse({
+            description: 'Не удалось добавить информацию',
         }),
     );
 }

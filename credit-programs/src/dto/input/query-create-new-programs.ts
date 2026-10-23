@@ -1,14 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional } from 'class-validator';
+import { Validate } from 'class-validator';
+import { LineValidationPrograms } from '../../common/validates/validate-line';
 
 
 export class CreateNewProgramsDTO {
   @ApiProperty({ example: 'Ипотека', description: 'Кредитная программа' })
-  @IsOptional()
+  @Validate(LineValidationPrograms)
   creditProgram: string;
 
   @ApiProperty({ example: 'Программа для юр.лиц', description: 'Информация о кредитной программе' })
-  @IsOptional()
+  @Validate(LineValidationPrograms)
   informationProgram: string;
 
 }

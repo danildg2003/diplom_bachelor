@@ -1,14 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { IsUUID } from "class-validator";
 
 
 export class DeleteProgramsDTO {
     @ApiProperty({
-        description: 'Название кредитной программы'
+        example: '38669e8c-9d95-448e-bef1-5c5b04c283b5',
+        description: 'id кредитной программы (можно взять из GET create/programs)'
     })
-    creditProgram: string;
-
-    @ApiProperty({
-        description: 'Информация о кредитной программе'
-    })
-    informationProgram: string;
+    @IsUUID()
+    id: string;
 }

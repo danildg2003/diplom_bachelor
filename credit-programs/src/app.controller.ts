@@ -8,7 +8,6 @@ import { CreateNewProgramsDTO } from './dto/input/query-create-new-programs';
 import { DeleteProgramsDTO } from './dto/input/delete-programs';
 import { AppService } from './app.service';
 import {
-  Param,
   Controller,
   Get,
   Query,
@@ -81,7 +80,7 @@ export class AppController {
     } catch (error) {
       throw new HttpException(
         { success: false, message: error.message },
-        HttpStatus.NOT_FOUND,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -94,7 +93,7 @@ export class AppController {
   @UseGuards(ProgramsAccess)
   @Delete('delete/programs')
   @HttpCode(HttpStatus.OK)
-  async deleteProgram(@Param() deleteProgramsDto: DeleteProgramsDTO) {
+  async deleteProgram(@Query() deleteProgramsDto: DeleteProgramsDTO) {
     return this.appService.deleteProgram(deleteProgramsDto);
   }
 }

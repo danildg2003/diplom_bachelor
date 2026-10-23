@@ -22,6 +22,7 @@ export class AppRepository {
       const skip = Math.floor(NumPlates * (PagePlates - 1));
       const loanss = await LoansRepository.find({
         select: {
+          id: true,
           summCredit: true,
           stavkaCredit: true,
           srokCredit: true,
@@ -33,10 +34,13 @@ export class AppRepository {
       loanss.length > 0
         ? loanss.map((loan) => {
             const monthlyProcentStavka = loan.stavkaCredit / 100 / 12;
-    
+
+            // при ставке 0% формула аннуитета делит на ноль, платеж просто сумма / срок
             const monthlyPlatezh =
-              (loan.summCredit * monthlyProcentStavka * Math.pow(1 + monthlyProcentStavka, loan.srokCredit)) /
-              (Math.pow(1 + monthlyProcentStavka, loan.srokCredit) - 1);
+              monthlyProcentStavka === 0
+                ? loan.summCredit / loan.srokCredit
+                : (loan.summCredit * monthlyProcentStavka * Math.pow(1 + monthlyProcentStavka, loan.srokCredit)) /
+                  (Math.pow(1 + monthlyProcentStavka, loan.srokCredit) - 1);
     
             const overpayment = monthlyPlatezh * loan.srokCredit - loan.summCredit;
     

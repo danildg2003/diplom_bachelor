@@ -1,5 +1,5 @@
 import { applyDecorators } from "@nestjs/common";
-import { ApiBearerAuth, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from "@nestjs/swagger";
 
 export function CreateProgramsResultSwagger(){
     return applyDecorators(
@@ -9,10 +9,10 @@ export function CreateProgramsResultSwagger(){
             description: 'Кредитные программы получены',
         }),
         ApiNotFoundResponse({
-            description: 'Кредитные программы не получены',
+            description: 'Запрошенная страница не найдена',
         }),
-        ApiForbiddenResponse({
-            description: 'Недостаточно прав доступа'
+        ApiUnauthorizedResponse({
+            description: 'Токен отсутствует или недействителен'
         }),
     );
 }

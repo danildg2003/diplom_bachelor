@@ -8,7 +8,6 @@ import { CreateLoansResultSwagger } from './swagger/createLoansResultSwagger';
 import { DeleteLoansSwagger } from './swagger/deleteLoansSwagger';
 import { PostLoansSwagger } from './swagger/postLoansSwagger';
 import {
-  Param,
   Controller,
   Get,
   Query,
@@ -82,7 +81,7 @@ export class AppController {
     } catch (error) {
       throw new HttpException(
         { success: false, message: error.message },
-        HttpStatus.NOT_FOUND,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -95,7 +94,7 @@ export class AppController {
   @UseGuards(LoansAccess)
   @Delete('delete/loans')
   @HttpCode(HttpStatus.OK)
-  async deleteLoans(@Param() deleteLoansDto: DeleteLoansDTO) {
+  async deleteLoans(@Query() deleteLoansDto: DeleteLoansDTO) {
     return this.appService.deleteLoans(deleteLoansDto);
   }
 }

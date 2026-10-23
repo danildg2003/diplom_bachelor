@@ -10,14 +10,14 @@ export class QueryProgramsInputDTO {
   @IsOptional()
   @Transform(({ value }) => {
     if (!value) {
-      return 5;
+      return 1;
     }
     return value;
   })
   @Type(() => Number)
   @Min(1)
   @Max(100)
-  PageInfo: number = 5;
+  PageInfo: number = 1;
 
   @ApiPropertyOptional({
     description: 'Кол-во кредитных программ',

@@ -1,5 +1,5 @@
 import { applyDecorators } from "@nestjs/common";
-import { ApiBearerAuth, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation } from "@nestjs/swagger";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from "@nestjs/swagger";
 
 export function DeleteProgramsSwagger(){
     return applyDecorators(
@@ -8,11 +8,14 @@ export function DeleteProgramsSwagger(){
         ApiOkResponse({
             description: 'Кредитные программы удалены',
         }),
-        ApiNotFoundResponse({
-            description: 'Кредитные программы не удалены',
+        ApiBadRequestResponse({
+            description: 'Некорректный id',
         }),
-        ApiForbiddenResponse({
-            description: 'Недостаточно прав доступа'
+        ApiNotFoundResponse({
+            description: 'Запись не найдена',
+        }),
+        ApiUnauthorizedResponse({
+            description: 'Токен отсутствует или недействителен'
         }),
     );
 }

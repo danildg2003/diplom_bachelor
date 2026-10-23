@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreditPrograms } from './programs/programs-entity';
@@ -26,9 +26,14 @@ export class AppService {
       NumPlates,
     );
 
-    if (!programs.items) {
-      this.logger.log('Кредитные программы не найдены');
-      notice.addError('Кредитные программы не найдены', '', InterlayersStatusesPrograms.NOT_FOUND);
+    // записи есть, но запрошенная страница за пределами последней
+    if (programs.total > 0 && programs.items.length === 0) {
+      this.logger.log('Страница не найдена');
+      notice.addError(
+        `Страница ${PagePlates} не найдена, всего страниц: ${programs.pages}`,
+        '',
+        InterlayersStatusesPrograms.NOT_FOUND,
+      );
       return notice;
     }
     notice.addData(programs);
@@ -47,12 +52,11 @@ export class AppService {
   }
 
   async deleteProgram(deleteProgramDTO: DeleteProgramsDTO) {
-    const { creditProgram, informationProgram } = deleteProgramDTO;
     const program = await this.creditRepository.findOne({
-      where: { creditProgram, informationProgram },
+      where: { id: deleteProgramDTO.id },
     });
     if (!program) {
-      return { success: false, message: 'Запись не найдена' };
+      throw new NotFoundException('Запись не найдена');
     }
     await this.creditRepository.remove(program);
     return { success: true, message: 'Запись успешно удалена' };

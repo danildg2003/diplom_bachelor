@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AppRepository } from './app.repository';
@@ -25,9 +25,14 @@ export class AppService {
       PagePlates,
       NumPlates,
     );
-    if (!loans.items) {
-      this.logger.log('Номера не найдены');
-      notice.addError('Номера не найдены', '', InterlayersStatusesLoans.NOT_FOUND);
+    // записи есть, но запрошенная страница за пределами последней
+    if (loans.total > 0 && loans.items.length === 0) {
+      this.logger.log('Страница не найдена');
+      notice.addError(
+        `Страница ${PagePlates} не найдена, всего страниц: ${loans.pages}`,
+        '',
+        InterlayersStatusesLoans.NOT_FOUND,
+      );
       return notice;
     }
     notice.addData(loans);
@@ -46,12 +51,11 @@ export class AppService {
   }
 
   async deleteLoans(deleteLoansDTO: DeleteLoansDTO) {
-    const { summCredit, srokCredit } = deleteLoansDTO;
     const loan = await this.LoansRepository.findOne({
-      where: { summCredit, srokCredit },
+      where: { id: deleteLoansDTO.id },
     });
     if (!loan) {
-      return { success: false, message: 'Запись не найдена' };
+      throw new NotFoundException('Запись не найдена');
     }
     await this.LoansRepository.remove(loan);
     return { success: true, message: 'Запись успешно удалена' };

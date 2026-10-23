@@ -1,24 +1,28 @@
 import { applyDecorators } from '@nestjs/common';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
-  ApiForbiddenResponse,
-  ApiNotFoundResponse,
-  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
   ApiOperation,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 export function PostLoansSwagger() {
   return applyDecorators(
     ApiOperation({ summary: `Записать новые кредитные расчеты` }),
     ApiBearerAuth('Access Token'),
-    ApiOkResponse({
+    ApiCreatedResponse({
       description: 'Данные успешно зарегистрированы',
     }),
-    ApiNotFoundResponse({
-      description: 'Не удалось зарегистрировать данные',
+    ApiBadRequestResponse({
+      description: 'Некорректные данные',
     }),
-    ApiForbiddenResponse({
-      description: 'Недостаточно прав доступа',
+    ApiUnauthorizedResponse({
+      description: 'Токен отсутствует или недействителен',
+    }),
+    ApiInternalServerErrorResponse({
+      description: 'Не удалось зарегистрировать данные',
     }),
   );
 }

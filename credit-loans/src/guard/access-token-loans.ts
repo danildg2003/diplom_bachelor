@@ -1,4 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 
@@ -10,9 +15,9 @@ export class LoansAccess implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     let authHeader = request.headers.authorization;
 
-    if (!authHeader) {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       console.log('Токен отсутствует');
-      return false;
+      throw new UnauthorizedException('Токен отсутствует');
     }
     authHeader = authHeader.substring(7);
     console.log('Access Token: ', authHeader);
@@ -24,7 +29,7 @@ export class LoansAccess implements CanActivate {
       return true;
     } catch (error) {
       console.log('Ошибка проверки токена:', error.message);
-      return false;
+      throw new UnauthorizedException('Токен недействителен');
     }
   }
 }

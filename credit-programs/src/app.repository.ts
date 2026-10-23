@@ -24,6 +24,7 @@ export class AppRepository {
       const skip = Math.floor(NumPlates * (PagePlates - 1));
       const programs = await ProgramsRepository.find({
         select: {
+            id: true,
             creditProgram: true,
             informationProgram: true,
         },

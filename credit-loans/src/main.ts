@@ -11,7 +11,7 @@ async function bootstrap() {
   // Глобальный префикс
   app.setGlobalPrefix('api');
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
 
   // Swagger
   const config = new DocumentBuilder()
