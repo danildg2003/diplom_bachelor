@@ -1,4 +1,4 @@
-import { CreditLoans } from 'src/loans/loans-entity';
+import { CreditLoans } from '../loans/loans-entity';
 import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
 dotenv.config();

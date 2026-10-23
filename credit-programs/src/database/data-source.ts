@@ -1,4 +1,4 @@
-import { CreditPrograms } from 'src/programs/programs-entity';
+import { CreditPrograms } from '../programs/programs-entity';
 import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
 dotenv.config();

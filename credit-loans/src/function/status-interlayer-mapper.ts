@@ -1,4 +1,4 @@
-import { Interlayer, InterlayersStatusesLoans } from 'src/model/interlayerLoans';
+import { Interlayer, InterlayersStatusesLoans } from '../model/interlayerLoans';
 import {
   BadRequestException,
   ForbiddenException,

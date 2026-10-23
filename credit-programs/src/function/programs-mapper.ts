@@ -1,5 +1,5 @@
-import { ProgramsDTO } from "src/dto/output/programs.dto";
-import { CreditPrograms } from "src/programs/programs-entity";
+import { ProgramsDTO } from "../dto/output/programs.dto";
+import { CreditPrograms } from "../programs/programs-entity";
 
 
 export const programsMapper = (programms: CreditPrograms): ProgramsDTO => {

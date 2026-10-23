@@ -1,5 +1,5 @@
-import { CreditLoans } from 'src/loans/loans-entity';
-import { LoansDTO } from 'src/dto/output/loans-dto';
+import { CreditLoans } from '../loans/loans-entity';
+import { LoansDTO } from '../dto/output/loans-dto';
 
 export const loansMapper = (loanss: CreditLoans): LoansDTO => {
   return {
